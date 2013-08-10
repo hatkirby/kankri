@@ -20,7 +20,11 @@
  * 
  */
 
-char* hostname, nick, port, password, channel;
+char* hostname;
+char* nick;
+int port;
+char* password;
+char* channel;
 
 char* _(const char* str)
 {
@@ -32,8 +36,6 @@ char* _(const char* str)
 int message(char* params, irc_reply_data* hostd, void* conn)
 {
     std::string str(params);
-    std::string thetime(asctime(gettime()));
-    thetime = thetime.substr(4,15);
 
     if (*hostd->target != '#')
     {
@@ -62,12 +64,11 @@ void terminate(int param)
 
 int main(int argc, char** argv)
 {
-    atexit(end_logging);
     signal(SIGTERM, terminate);
 	
 	YAML::Node config = YAML::LoadFile("config.yml");
 	hostname = _(config["hostname"].as<std::string>().c_str());
-	port = _(config["port"].as<std::string>().c_str());
+	port = config["port"].as<int>();
 	nick = _(config["nick"].as<std::string>().c_str());
 	password = _(config["password"].as<std::string>().c_str());
 	channel = _(config["password"].as<std::string>().c_str());
